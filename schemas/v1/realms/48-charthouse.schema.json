@@ -1,43 +1,78 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/48-charthouse.schema.json",
-  "title": "Bosun Realm 48: Charthouse Contract v1",
-  "description": "Machine-readable delta schema contract for Charthouse (Realm 48), extending Archetype Stage-Gate Manifest and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/charthouse.schema.json",
+  "title": "Charthouse Realm Schema (48)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/stage-gate-manifest.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$charthouse"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "charthouse",
-              "description": "Canonical realm identifier for Charthouse."
-            }
-          }
+        "realm": {
+          "const": "charthouse"
         },
-        "campaign_lore_node": {
+        "archetype": {
+          "const": "stage_gate_manifest"
+        }
+      }
+    },
+    "$charthouse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "codex_title",
+        "canon_level",
+        "timeline_epoch",
+        "scene_sequence"
+      ],
+      "properties": {
+        "codex_title": {
+          "type": "string"
+        },
+        "canon_level": {
           "type": "string",
-          "description": "World-building lore or narrative canon branch node."
+          "enum": [
+            "core_canon",
+            "apocrypha",
+            "draft_fork",
+            "world_lore"
+          ]
         },
         "timeline_epoch": {
-          "type": "string",
-          "description": "Fictional world or campaign historical era."
+          "type": "string"
         },
-        "scene_binder_ref": {
-          "type": "string",
-          "description": "Reference identifier to narrative scene dossier / manuscript binder."
+        "scene_sequence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "scene_id",
+              "heading",
+              "pov_character"
+            ],
+            "properties": {
+              "scene_id": {
+                "type": "string"
+              },
+              "heading": {
+                "type": "string"
+              },
+              "pov_character": {
+                "type": "string",
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              }
+            }
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

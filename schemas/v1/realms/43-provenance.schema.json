@@ -1,53 +1,77 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/43-provenance.schema.json",
-  "title": "Bosun Realm 43: Provenance Contract v1",
-  "description": "Machine-readable delta schema contract for Provenance (Realm 43), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/provenance.schema.json",
+  "title": "Provenance Realm Schema (43)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$provenance"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "provenance",
-              "description": "Canonical realm identifier for Provenance."
-            }
-          }
+        "realm": {
+          "const": "provenance"
         },
-        "appraisal_usd": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_title",
+        "medium",
+        "acquisition_date",
+        "chain_of_custody"
+      ],
+      "properties": {
+        "item_title": {
+          "type": "string"
+        },
+        "medium": {
+          "type": "string"
+        },
+        "creator": {
+          "type": "string"
+        },
+        "acquisition_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "appraisal_value_usd": {
           "type": "number",
-          "minimum": 0.0,
-          "description": "Certified fair-market appraisal value in USD."
+          "minimum": 0
         },
-        "chain_of_custody_urns": {
+        "chain_of_custody": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^urn:[a-zA-Z0-9_.:-]+$"
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "custodian",
+              "transfer_year"
+            ],
+            "properties": {
+              "custodian": {
+                "type": "string"
+              },
+              "transfer_year": {
+                "type": "integer",
+                "minimum": 1000
+              }
+            }
           },
-          "description": "Ordered URN lineage of historical owners and custodians."
-        },
-        "edition_number": {
-          "type": "string",
-          "description": "Print or casting edition notation (e.g. '3/50', 'AP', 'Unique')."
-        },
-        "authenticity_cert_cas": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "CAS hash of certificate of authenticity or expert opinion."
+          "minItems": 1
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

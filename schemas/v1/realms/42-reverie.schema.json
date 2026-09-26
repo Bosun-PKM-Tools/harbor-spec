@@ -1,56 +1,57 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/42-reverie.schema.json",
-  "title": "Bosun Realm 42: Reverie Contract v1",
-  "description": "Machine-readable delta schema contract for Reverie (Realm 42), extending Archetype Interaction Ledger and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/reverie.schema.json",
+  "title": "Reverie Realm Schema (42)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/interaction-ledger.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$reverie"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "reverie",
-              "description": "Canonical realm identifier for Reverie."
-            }
-          }
+        "realm": {
+          "const": "reverie"
         },
-        "dream_motif_tags": {
+        "archetype": {
+          "const": "interaction_ledger"
+        }
+      }
+    },
+    "$reverie": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lucidity_level",
+        "motifs",
+        "emotional_tone"
+      ],
+      "properties": {
+        "lucidity_level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "emotional_tone": {
+          "type": "string"
+        },
+        "motifs": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Archetypal symbols and recurring narrative dream motifs."
+          "minItems": 1
         },
-        "lucidity_level": {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 5,
-          "description": "Lucidity score from 0 (unconscious) to 5 (full waking control)."
-        },
-        "sleep_stage_anchor": {
+        "sleep_cycle_ref": {
           "type": "string",
-          "enum": [
-            "REM",
-            "N1",
-            "N2",
-            "N3",
-            "hypnagogic",
-            "hypnopompic"
-          ],
-          "description": "Physiological sleep architecture stage anchoring the dream recall."
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

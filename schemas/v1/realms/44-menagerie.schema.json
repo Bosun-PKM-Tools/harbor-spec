@@ -1,71 +1,88 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/44-menagerie.schema.json",
-  "title": "Bosun Realm 44: Menagerie Contract v1",
-  "description": "Machine-readable delta schema contract for Menagerie (Realm 44), extending Archetype Interaction Ledger and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/menagerie.schema.json",
+  "title": "Menagerie Realm Schema (44)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/interaction-ledger.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$menagerie"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "menagerie",
-              "description": "Canonical realm identifier for Menagerie."
-            }
-          }
+        "realm": {
+          "const": "menagerie"
         },
-        "species_breed": {
+        "archetype": {
+          "const": "interaction_ledger"
+        }
+      }
+    },
+    "$menagerie": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "animal_name",
+        "species",
+        "breed",
+        "weight_kg",
+        "vaccination_ledger"
+      ],
+      "properties": {
+        "animal_name": {
+          "type": "string"
+        },
+        "species": {
           "type": "string",
-          "description": "Biological species and domestic breed identification."
+          "enum": [
+            "canine",
+            "feline",
+            "equine",
+            "avian",
+            "livestock"
+          ]
         },
-        "microchip_hex_id": {
-          "type": "string",
-          "pattern": "^[0-9A-Fa-f]{10,16}$",
-          "description": "ISO 11784/11785 RFID implant microchip identification code."
+        "breed": {
+          "type": "string"
         },
-        "vet_clinic_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of the primary veterinary medical center."
+        "microchip_id": {
+          "type": "string"
         },
-        "vaccination_schedule": {
+        "weight_kg": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "vaccination_ledger": {
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "required": [
-              "vaccine",
-              "due_date"
+              "vaccine_name",
+              "administered_date",
+              "expiration_date"
             ],
             "properties": {
-              "vaccine": {
-                "type": "string",
-                "description": "Immunization vaccine name."
+              "vaccine_name": {
+                "type": "string"
               },
               "administered_date": {
                 "type": "string",
-                "description": "Administration date."
+                "format": "date"
               },
-              "due_date": {
+              "expiration_date": {
                 "type": "string",
-                "description": "Booster revaccination due date."
+                "format": "date"
               }
-            },
-            "additionalProperties": true
-          },
-          "description": "Scheduled and administered animal immunizations."
+            }
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

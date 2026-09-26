@@ -1,49 +1,84 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/46-breadboard.schema.json",
-  "title": "Bosun Realm 46: Breadboard Contract v1",
-  "description": "Machine-readable delta schema contract for Breadboard (Realm 46), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/breadboard.schema.json",
+  "title": "Breadboard Realm Schema (46)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$breadboard"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "breadboard",
-              "description": "Canonical realm identifier for Breadboard."
-            }
-          }
+        "realm": {
+          "const": "breadboard"
+        },
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$breadboard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "project_name",
+        "mcu_architecture",
+        "operating_voltage",
+        "schematic_cas"
+      ],
+      "properties": {
+        "project_name": {
+          "type": "string"
+        },
+        "mcu_architecture": {
+          "type": "string",
+          "enum": [
+            "esp32",
+            "rp2040",
+            "stm32",
+            "avr",
+            "nrf52",
+            "risc_v"
+          ]
+        },
+        "operating_voltage": {
+          "type": "number",
+          "enum": [
+            3.3,
+            5.0,
+            12.0,
+            24.0
+          ]
         },
         "schematic_cas": {
           "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "CAS hash of KiCad or EDA electrical schematic."
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
         },
-        "pcb_revision": {
+        "firmware_cas": {
           "type": "string",
-          "description": "Board layout hardware revision tag (e.g. 'v1.2', 'Rev C')."
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
         },
-        "gpio_pinout_map": {
-          "type": "object",
-          "description": "Microcontroller GPIO pin-to-signal functional mapping.",
-          "additionalProperties": true
-        },
-        "operating_voltage_vdc": {
-          "type": "number",
-          "description": "Nominal DC operating circuit voltage (e.g. 3.3, 5.0, 12.0)."
+        "bus_protocols": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "i2c",
+              "spi",
+              "uart",
+              "can",
+              "nmea2000",
+              "usb"
+            ]
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

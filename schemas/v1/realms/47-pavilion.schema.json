@@ -1,67 +1,80 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/47-pavilion.schema.json",
-  "title": "Bosun Realm 47: Pavilion Contract v1",
-  "description": "Machine-readable delta schema contract for Pavilion (Realm 47), extending Archetype Stage-Gate Manifest and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/pavilion.schema.json",
+  "title": "Pavilion Realm Schema (47)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/stage-gate-manifest.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$pavilion"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "pavilion",
-              "description": "Canonical realm identifier for Pavilion."
-            }
-          }
+        "realm": {
+          "const": "pavilion"
         },
-        "run_of_show_steps": {
+        "archetype": {
+          "const": "stage_gate_manifest"
+        }
+      }
+    },
+    "$pavilion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_name",
+        "event_start_utc",
+        "venue_name",
+        "run_of_show"
+      ],
+      "properties": {
+        "event_name": {
+          "type": "string"
+        },
+        "event_start_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "event_end_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "venue_name": {
+          "type": "string"
+        },
+        "expected_headcount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "run_of_show": {
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "required": [
-              "cue_time",
-              "activity"
+              "time_offset_minutes",
+              "segment_title"
             ],
             "properties": {
-              "cue_time": {
-                "type": "string",
-                "description": "Timing cue or offset."
+              "time_offset_minutes": {
+                "type": "integer"
               },
-              "activity": {
-                "type": "string",
-                "description": "Program action or speaker cue."
+              "segment_title": {
+                "type": "string"
               },
-              "owner": {
+              "lead_ref": {
                 "type": "string",
-                "description": "Responsible coordinator."
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
               }
-            },
-            "additionalProperties": true
-          },
-          "description": "Chronological run-of-show cues for the gathering."
-        },
-        "venue_reservation_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of venue booking or facility lease."
-        },
-        "headcount_target": {
-          "type": "integer",
-          "minimum": 1,
-          "description": "Target or cap for participant attendance."
+            }
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

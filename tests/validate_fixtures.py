@@ -72,7 +72,17 @@ fixture_map = {
     "38-binnacle-axiom.md": ["realms/38-binnacle.schema.json", "realms/binnacle.schema.json"],
     "39-claim-patent.md": ["realms/39-claim.schema.json", "realms/claim.schema.json"],
     "40-tribute-registry.md": ["realms/40-tribute.schema.json", "realms/tribute.schema.json"],
-    "41-weft-garment.md": ["realms/41-weft.schema.json", "realms/weft.schema.json"]
+    "41-weft-garment.md": ["realms/41-weft.schema.json", "realms/weft.schema.json"],
+    # Wave 9 (Realms 42-50)
+    "42-reverie-log.md": ["realms/42-reverie.schema.json", "realms/reverie.schema.json"],
+    "43-provenance-art.md": ["realms/43-provenance.schema.json", "realms/provenance.schema.json"],
+    "44-menagerie-pet.md": ["realms/44-menagerie.schema.json", "realms/menagerie.schema.json"],
+    "45-muster-kit.md": ["realms/45-muster.schema.json", "realms/muster.schema.json"],
+    "46-breadboard-schematic.md": ["realms/46-breadboard.schema.json", "realms/breadboard.schema.json"],
+    "47-pavilion-event.md": ["realms/47-pavilion.schema.json", "realms/pavilion.schema.json"],
+    "48-charthouse-codex.md": ["realms/48-charthouse.schema.json", "realms/charthouse.schema.json"],
+    "49-commonwealth-aid.md": ["realms/49-commonwealth.schema.json", "realms/commonwealth.schema.json"],
+    "50-relay-deadman.md": ["realms/50-relay.schema.json", "realms/relay.schema.json"]
 }
 
 def extract_frontmatter(path: Path) -> dict:
@@ -88,7 +98,7 @@ registry = build_registry()
 passed = 0
 failed = 0
 
-print("=== Running Bosun Spec 40-Fixture Validation Suite ===")
+print("=== Running Bosun Spec 49-Fixture Final Validation Suite ===")
 
 for file_name, schema_candidates in fixture_map.items():
     fixture_path = None

@@ -1,49 +1,56 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/49-commonwealth.schema.json",
-  "title": "Bosun Realm 49: Commonwealth Contract v1",
-  "description": "Machine-readable delta schema contract for Commonwealth (Realm 49), extending Archetype Interaction Ledger and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/commonwealth.schema.json",
+  "title": "Commonwealth Realm Schema (49)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/interaction-ledger.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$commonwealth"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "commonwealth",
-              "description": "Canonical realm identifier for Commonwealth."
-            }
-          }
+        "realm": {
+          "const": "commonwealth"
         },
-        "initiative_name": {
-          "type": "string",
-          "description": "Civic collective or mutual aid initiative name."
+        "archetype": {
+          "const": "interaction_ledger"
+        }
+      }
+    },
+    "$commonwealth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "program_name",
+        "organization",
+        "service_hours",
+        "impact_metrics"
+      ],
+      "properties": {
+        "program_name": {
+          "type": "string"
         },
-        "hours_logged": {
+        "organization": {
+          "type": "string"
+        },
+        "service_hours": {
           "type": "number",
-          "minimum": 0.0,
-          "description": "Accumulated volunteer service labor hours."
+          "minimum": 0
         },
-        "volunteer_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of the volunteer participant."
+        "role": {
+          "type": "string"
         },
-        "mutual_aid_batch_id": {
-          "type": "string",
-          "description": "Batch allotment or resource distribution round ID."
+        "impact_metrics": {
+          "type": "object",
+          "additionalProperties": true
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }
