@@ -1,48 +1,65 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/36-strongbox.schema.json",
-  "title": "Bosun Realm 36: Strongbox Contract v1",
-  "description": "Machine-readable delta schema contract for Strongbox (Realm 36), extending Archetype Sovereign Vault and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/strongbox.schema.json",
+  "title": "Strongbox Realm Schema (36)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/sovereign-vault.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$strongbox"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "strongbox",
-              "description": "Canonical realm identifier for Strongbox."
-            }
-          }
+        "realm": {
+          "const": "strongbox"
         },
-        "key_algorithm": {
+        "archetype": {
+          "const": "sovereign_vault"
+        }
+      }
+    },
+    "$strongbox": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key_type",
+        "public_identifier",
+        "payload_cas_urn",
+        "hardware_backed"
+      ],
+      "properties": {
+        "key_type": {
           "type": "string",
-          "description": "Cryptographic key algorithm (e.g. 'Ed25519', 'RSA-4096', 'ECDSA-secp256k1')."
+          "enum": [
+            "ssh_ed25519",
+            "pgp_rsa4096",
+            "age_x25519",
+            "ethereum_secp256k1",
+            "bitcoin_taproot"
+          ]
         },
-        "public_key_fingerprint": {
-          "type": "string",
-          "description": "Hex or OpenSSH fingerprint of the public key."
+        "public_identifier": {
+          "type": "string"
         },
-        "hardware_token_serial": {
+        "payload_cas_urn": {
           "type": "string",
-          "description": "Serial number of backing hardware security token (HSM / YubiKey)."
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
         },
-        "derivation_path": {
-          "type": "string",
-          "pattern": "^m(/[0-9]+'?)+$",
-          "description": "BIP-32 / BIP-44 hierarchical deterministic key derivation path."
+        "hardware_backed": {
+          "type": "boolean"
+        },
+        "token_model": {
+          "type": "string"
+        },
+        "key_fingerprint": {
+          "type": "string"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

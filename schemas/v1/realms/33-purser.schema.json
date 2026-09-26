@@ -1,56 +1,71 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/33-purser.schema.json",
-  "title": "Bosun Realm 33: Purser Contract v1",
-  "description": "Machine-readable delta schema contract for Purser (Realm 33), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/purser.schema.json",
+  "title": "Purser Realm Schema (33)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$purser"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "purser",
-              "description": "Canonical realm identifier for Purser."
-            }
-          }
+        "realm": {
+          "const": "purser"
         },
-        "billing_cadence": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$purser": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "service_name",
+        "billing_interval",
+        "cost_usd",
+        "payment_method_ref",
+        "auto_renew"
+      ],
+      "properties": {
+        "service_name": {
+          "type": "string"
+        },
+        "billing_interval": {
           "type": "string",
           "enum": [
             "monthly",
             "annual",
             "quarterly",
-            "usage_based",
-            "one_time"
-          ],
-          "description": "Subscription or procurement billing interval."
+            "usage_based"
+          ]
         },
-        "vendor_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of the vendor or service provider organization."
-        },
-        "monthly_spend_usd": {
+        "cost_usd": {
           "type": "number",
-          "minimum": 0.0,
-          "description": "Normalized monthly expenditure in USD."
+          "minimum": 0
         },
-        "cancellation_sla": {
+        "payment_method_ref": {
           "type": "string",
-          "description": "Notice period or terms required for subscription cancellation."
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "auto_renew": {
+          "type": "boolean"
+        },
+        "next_renewal_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "cancellation_url": {
+          "type": "string",
+          "format": "uri"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

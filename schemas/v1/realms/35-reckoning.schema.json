@@ -1,49 +1,65 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/35-reckoning.schema.json",
-  "title": "Bosun Realm 35: Reckoning Contract v1",
-  "description": "Machine-readable delta schema contract for Reckoning (Realm 35), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/reckoning.schema.json",
+  "title": "Reckoning Realm Schema (35)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$reckoning"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "reckoning",
-              "description": "Canonical realm identifier for Reckoning."
-            }
-          }
+        "realm": {
+          "const": "reckoning"
         },
-        "decision_framework": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$reckoning": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "heuristic_name",
+        "domain",
+        "core_maxim",
+        "pre_mortem_checklist"
+      ],
+      "properties": {
+        "heuristic_name": {
+          "type": "string"
+        },
+        "domain": {
           "type": "string",
-          "description": "Methodology applied to evaluate the decision (e.g. 'SPADE', 'WRAP', 'Cynefin')."
+          "enum": [
+            "systems_thinking",
+            "risk_mitigation",
+            "probabilistic",
+            "stoic_governance",
+            "game_theory"
+          ]
         },
-        "pre_mortem_risk_tags": {
+        "core_maxim": {
+          "type": "string"
+        },
+        "originator": {
+          "type": "string"
+        },
+        "pre_mortem_checklist": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Anticipated failure modes identified during pre-mortem evaluation."
-        },
-        "bias_audit_flags": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Cognitive biases explicitly checked and mitigated."
+          "minItems": 1
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

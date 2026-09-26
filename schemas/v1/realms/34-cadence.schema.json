@@ -1,49 +1,71 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/34-cadence.schema.json",
-  "title": "Bosun Realm 34: Cadence Contract v1",
-  "description": "Machine-readable delta schema contract for Cadence (Realm 34), extending Archetype Stage-Gate Manifest and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/cadence.schema.json",
+  "title": "Cadence Realm Schema (34)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/stage-gate-manifest.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$cadence"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "cadence",
-              "description": "Canonical realm identifier for Cadence."
-            }
-          }
+        "realm": {
+          "const": "cadence"
         },
-        "streak_count_current": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Current active consecutive streak count."
+        "archetype": {
+          "const": "stage_gate_manifest"
+        }
+      }
+    },
+    "$cadence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "habit_name",
+        "frequency",
+        "target_time_window",
+        "streak_count"
+      ],
+      "properties": {
+        "habit_name": {
+          "type": "string"
         },
-        "target_frequency": {
+        "frequency": {
           "type": "string",
-          "description": "Intended recurrence frequency (e.g. 'daily', 'weekdays', '3x/week')."
+          "enum": [
+            "daily",
+            "weekdays",
+            "weekly",
+            "lunar_cycle"
+          ]
         },
-        "ritual_window": {
+        "target_time_window": {
           "type": "string",
-          "description": "Time-of-day execution window (e.g. 'morning', '06:00-08:00', 'evening')."
+          "enum": [
+            "morning",
+            "midday",
+            "evening",
+            "anytime"
+          ]
         },
-        "best_streak": {
+        "streak_count": {
           "type": "integer",
-          "minimum": 0,
-          "description": "All-time longest consecutive streak count."
+          "minimum": 0
+        },
+        "longest_streak": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cue_trigger": {
+          "type": "string"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }
