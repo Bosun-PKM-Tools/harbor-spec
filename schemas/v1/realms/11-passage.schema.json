@@ -1,82 +1,110 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/11-passage.schema.json",
-  "title": "Bosun Realm 11: Passage Contract v1",
-  "description": "Machine-readable delta schema contract for Passage (Realm 11), extending Archetype Stage-Gate Manifest with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/passage.schema.json",
+  "title": "Passage Realm Schema (11)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/stage-gate-manifest.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$passage"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "passage",
-              "description": "Canonical realm identifier for Passage."
-            }
-          }
+        "realm": {
+          "const": "passage"
         },
-        "transit_mode": {
+        "archetype": {
+          "const": "stage_gate_manifest"
+        }
+      }
+    },
+    "$passage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "origin",
+        "destination",
+        "departure_utc",
+        "legs"
+      ],
+      "properties": {
+        "status": {
           "type": "string",
           "enum": [
-            "air",
-            "rail",
-            "sea",
-            "road",
-            "transit",
-            "foot",
-            "other"
-          ],
-          "description": "Primary transit mode for the voyage or passage."
+            "planning",
+            "booked",
+            "en_route",
+            "completed",
+            "cancelled"
+          ]
         },
-        "booking_ref": {
+        "origin": {
+          "type": "string"
+        },
+        "destination": {
+          "type": "string"
+        },
+        "departure_utc": {
           "type": "string",
-          "description": "Carrier reservation or ticket booking reference."
+          "format": "date-time"
         },
-        "waypoints": {
+        "arrival_utc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "legs": {
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "required": [
-              "name"
+              "leg_id",
+              "mode",
+              "carrier",
+              "identifier"
             ],
             "properties": {
-              "name": {
-                "type": "string",
-                "description": "Waypoint name or station/airport code."
+              "leg_id": {
+                "type": "string"
               },
-              "coordinates": {
-                "type": "array",
-                "items": {
-                  "type": "number"
-                },
-                "minItems": 2,
-                "maxItems": 3,
-                "description": "[longitude, latitude, elevation]."
-              },
-              "arrival": {
+              "mode": {
                 "type": "string",
-                "description": "Scheduled or actual arrival time."
+                "enum": [
+                  "flight",
+                  "rail",
+                  "ferry",
+                  "road",
+                  "foot"
+                ]
+              },
+              "carrier": {
+                "type": "string"
+              },
+              "identifier": {
+                "type": "string"
               },
               "departure": {
-                "type": "string",
-                "description": "Scheduled or actual departure time."
+                "type": "string"
+              },
+              "arrival": {
+                "type": "string"
               }
-            },
-            "additionalProperties": true
-          },
-          "description": "Ordered itinerary waypoints or stops."
+            }
+          }
+        },
+        "booking_references": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

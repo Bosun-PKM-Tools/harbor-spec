@@ -1,44 +1,97 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/14-tactician.schema.json",
-  "title": "Bosun Realm 14: Tactician Contract v1",
-  "description": "Machine-readable delta schema contract for Tactician (Realm 14), extending Archetype Dual-Track Telemetry with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/tactician.schema.json",
+  "title": "Tactician Realm Schema (14)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/dual-track-telemetry.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$tactician"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "tactician",
-              "description": "Canonical realm identifier for Tactician."
+        "realm": {
+          "const": "tactician"
+        },
+        "archetype": {
+          "const": "dual_track_telemetry"
+        }
+      }
+    },
+    "$tactician": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "activity_type",
+        "telemetry_sink",
+        "duration_seconds",
+        "distance_meters",
+        "splits"
+      ],
+      "properties": {
+        "activity_type": {
+          "type": "string",
+          "enum": [
+            "sailing_race",
+            "rowing",
+            "cycling",
+            "running",
+            "strength"
+          ]
+        },
+        "telemetry_sink": {
+          "type": "string",
+          "pattern": "^.+[.]parquet$"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "distance_meters": {
+          "type": "number",
+          "minimum": 0
+        },
+        "average_speed_knots": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max_speed_knots": {
+          "type": "number",
+          "minimum": 0
+        },
+        "splits": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "leg_number",
+              "elapsed_seconds"
+            ],
+            "properties": {
+              "leg_number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "elapsed_seconds": {
+                "type": "number",
+                "exclusiveMinimum": 0
+              },
+              "mark_name": {
+                "type": "string"
+              },
+              "tactical_notes": {
+                "type": "string"
+              }
             }
           }
-        },
-        "sport_type": {
-          "type": "string",
-          "description": "Athletic discipline or game tactical category (e.g., sailing, cycling, running, chess)."
-        },
-        "split_metrics": {
-          "type": "object",
-          "description": "Structured segment split times, power numbers, and pace statistics.",
-          "additionalProperties": true
-        },
-        "monte_carlo_preset": {
-          "type": "string",
-          "description": "Tactical route or performance Monte Carlo simulation scenario preset."
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

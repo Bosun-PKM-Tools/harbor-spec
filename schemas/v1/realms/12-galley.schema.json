@@ -1,138 +1,123 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/12-galley.schema.json",
-  "title": "Bosun Realm 12: Galley Contract v1",
-  "description": "Machine-readable delta schema contract for Galley (Realm 12), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/galley.schema.json",
+  "title": "Galley Realm Schema (12)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$galley"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "galley",
-              "description": "Canonical realm identifier for Galley."
-            }
-          }
+        "realm": {
+          "const": "galley"
         },
-        "servings": {
-          "type": "number",
-          "minimum": 0.1,
-          "description": "Standard batch yield or number of servings."
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$galley": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "yield_servings",
+        "prep_time_minutes",
+        "cook_time_minutes",
+        "ingredients"
+      ],
+      "properties": {
+        "yield_servings": {
+          "type": "integer",
+          "minimum": 1
         },
         "prep_time_minutes": {
           "type": "integer",
-          "minimum": 0,
-          "description": "Preparation duration in minutes."
+          "minimum": 0
         },
         "cook_time_minutes": {
           "type": "integer",
-          "minimum": 0,
-          "description": "Active cooking duration in minutes."
-        },
-        "total_time_minutes": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "End-to-end duration in minutes."
-        },
-        "author": {
-          "type": "string",
-          "description": "Recipe author or family source attribution."
-        },
-        "source": {
-          "type": "string",
-          "description": "Human-readable origin label (notebook, URL host, importer)."
-        },
-        "date": {
-          "type": "string",
-          "description": "Recipe capture or publication date."
+          "minimum": 0
         },
         "cuisine": {
           "type": "string"
         },
-        "category": {
-          "type": "string"
+        "dietary_flags": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "vegetarian",
+              "vegan",
+              "gluten_free",
+              "dairy_free",
+              "nut_free"
+            ]
+          }
         },
-        "recipe_yield": {
-          "type": "string",
-          "description": "Human-readable yield string (schema.org recipeYield)."
-        },
-        "provenance": {
-          "type": "object",
-          "description": "Origin and conversion lineage for the recipe note. Aligns with canonical-note-contract-v0.1 provenance.",
-          "properties": {
-            "original_system": {
-              "type": "string",
-              "description": "Upstream system or repository of origin."
-            },
-            "imported_at": {
-              "type": "string",
-              "description": "Timestamp when this record was extracted or ingested."
-            },
-            "converter_version": {
-              "type": "string",
-              "description": "Version string of the conversion pipeline or adapter."
-            },
-            "source_metadata": {
-              "type": "object",
-              "description": "Preserved upstream properties from the source system."
-            }
-          },
-          "additionalProperties": true
-        },
-        "schema_org": {
-          "type": "object",
-          "description": "schema.org Recipe overlay used by Galley and the starter-vault recipe fixture.",
-          "properties": {
-            "@context": {
-              "const": "https://schema.org"
-            },
-            "@type": {
-              "const": "Recipe"
-            }
-          },
-          "additionalProperties": true
-        },
-        "ingredients_schema": {
+        "ingredients": {
           "type": "array",
           "items": {
             "type": "object",
+            "additionalProperties": false,
             "required": [
-              "item"
+              "item",
+              "quantity",
+              "unit"
             ],
             "properties": {
               "item": {
-                "type": "string",
-                "description": "Ingredient name."
+                "type": "string"
               },
-              "amount": {
+              "quantity": {
                 "type": "number",
-                "description": "Quantity amount."
+                "exclusiveMinimum": 0
               },
               "unit": {
-                "type": "string",
-                "description": "Measurement unit (e.g. grams, ml, tbsp)."
+                "type": "string"
               },
-              "notes": {
+              "pantry_ref": {
                 "type": "string",
-                "description": "Preparation instructions or substitution notes."
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
               }
+            }
+          }
+        },
+        "nutrition_per_serving": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "calories_kcal",
+            "protein_g",
+            "carbohydrates_g",
+            "fat_g"
+          ],
+          "properties": {
+            "calories_kcal": {
+              "type": "number",
+              "minimum": 0
             },
-            "additionalProperties": true
-          },
-          "description": "Structured ingredients list with quantities and units."
+            "protein_g": {
+              "type": "number",
+              "minimum": 0
+            },
+            "carbohydrates_g": {
+              "type": "number",
+              "minimum": 0
+            },
+            "fat_g": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

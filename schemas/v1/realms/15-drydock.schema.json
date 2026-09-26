@@ -1,47 +1,102 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/15-drydock.schema.json",
-  "title": "Bosun Realm 15: Drydock Contract v1",
-  "description": "Machine-readable delta schema contract for Drydock (Realm 15), extending Archetype Dual-Track Telemetry with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/drydock.schema.json",
+  "title": "Drydock Realm Schema (15)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/dual-track-telemetry.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$drydock"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "drydock",
-              "description": "Canonical realm identifier for Drydock."
-            }
-          }
+        "realm": {
+          "const": "drydock"
         },
-        "property_urn": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$drydock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "property_type",
+        "parcel_id",
+        "gross_square_feet",
+        "maintenance_ledger"
+      ],
+      "properties": {
+        "property_type": {
           "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "Canonical URN identifying the real property or infrastructure asset."
+          "enum": [
+            "residential",
+            "commercial",
+            "slipway",
+            "hangar",
+            "raw_land"
+          ]
         },
-        "deed_ref": {
-          "type": "string",
-          "description": "Legal deed, parcel registry, or title documentation reference."
+        "parcel_id": {
+          "type": "string"
         },
-        "utility_metric_keys": {
+        "gross_square_feet": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "year_built": {
+          "type": "integer",
+          "minimum": 1700
+        },
+        "maintenance_ledger": {
           "type": "array",
           "items": {
-            "type": "string"
-          },
-          "description": "Utility and structural telemetry sensor keys logged in columnar storage."
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "date",
+              "system",
+              "cost_usd",
+              "contractor_ref"
+            ],
+            "properties": {
+              "date": {
+                "type": "string",
+                "format": "date"
+              },
+              "system": {
+                "type": "string",
+                "enum": [
+                  "roofing",
+                  "hvac",
+                  "plumbing",
+                  "electrical",
+                  "structural",
+                  "dock_piling"
+                ]
+              },
+              "cost_usd": {
+                "type": "number",
+                "minimum": 0
+              },
+              "contractor_ref": {
+                "type": "string",
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              },
+              "warranty_expiration": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }
