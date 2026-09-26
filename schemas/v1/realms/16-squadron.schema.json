@@ -1,45 +1,97 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/16-squadron.schema.json",
-  "title": "Bosun Realm 16: Squadron Contract v1",
-  "description": "Machine-readable delta schema contract for Squadron (Realm 16), extending Archetype Dual-Track Telemetry with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/squadron.schema.json",
+  "title": "Squadron Realm Schema (16)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/dual-track-telemetry.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$squadron"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "squadron",
-              "description": "Canonical realm identifier for Squadron."
-            }
-          }
+        "realm": {
+          "const": "squadron"
         },
-        "vin": {
+        "archetype": {
+          "const": "dual_track_telemetry"
+        }
+      }
+    },
+    "$squadron": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vin_or_hull_id",
+        "asset_name",
+        "engine_hours",
+        "telemetry_sink",
+        "service_records"
+      ],
+      "properties": {
+        "vin_or_hull_id": {
+          "type": "string"
+        },
+        "asset_name": {
+          "type": "string"
+        },
+        "propulsion_type": {
           "type": "string",
-          "pattern": "^[A-HJ-NPR-Z0-9]{17}$",
-          "description": "17-character ISO 3779 Vehicle Identification Number."
+          "enum": [
+            "inboard_diesel",
+            "outboard_gas",
+            "electric",
+            "sail_auxiliary",
+            "manual"
+          ]
         },
         "engine_hours": {
           "type": "number",
-          "minimum": 0,
-          "description": "Accumulated vehicle or vessel engine operational hours."
+          "minimum": 0
         },
-        "telemetry_parquet_ref": {
+        "odometer_miles": {
+          "type": "number",
+          "minimum": 0
+        },
+        "telemetry_sink": {
           "type": "string",
-          "description": "Local filesystem path or content hash referencing the vehicular CAN-bus/OBD telemetry dataset."
+          "pattern": "^.+[.]parquet$"
+        },
+        "service_records": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "service_date",
+              "description",
+              "interval_hours"
+            ],
+            "properties": {
+              "service_date": {
+                "type": "string",
+                "format": "date"
+              },
+              "description": {
+                "type": "string"
+              },
+              "interval_hours": {
+                "type": "number",
+                "minimum": 0
+              },
+              "serviced_by_contact": {
+                "type": "string",
+                "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              }
+            }
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

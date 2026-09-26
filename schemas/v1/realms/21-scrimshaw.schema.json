@@ -1,44 +1,76 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/21-scrimshaw.schema.json",
-  "title": "Bosun Realm 21: Scrimshaw Contract v1",
-  "description": "Machine-readable delta schema contract for Scrimshaw (Realm 21), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/scrimshaw.schema.json",
+  "title": "Scrimshaw Realm Schema (21)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$scrimshaw"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "scrimshaw",
-              "description": "Canonical realm identifier for Scrimshaw."
-            }
-          }
+        "realm": {
+          "const": "scrimshaw"
         },
-        "cad_model_cas": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$scrimshaw": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "model_format",
+        "target_process",
+        "stock_material",
+        "geometry_cas"
+      ],
+      "properties": {
+        "model_format": {
           "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "Content-addressed storage URN for CAD STEP/STL source geometry."
+          "enum": [
+            "step",
+            "iges",
+            "stl",
+            "f3d",
+            "svg_cutsheet",
+            "dxf"
+          ]
         },
-        "gcode_profile": {
+        "target_process": {
           "type": "string",
-          "description": "CNC/3D printer slicing and tooling profile identifier."
+          "enum": [
+            "cnc_milling",
+            "lathe",
+            "fdm_3d_print",
+            "sla_resin",
+            "laser_cutting",
+            "waterjet"
+          ]
         },
-        "toolpath_version": {
+        "stock_material": {
+          "type": "string"
+        },
+        "geometry_cas": {
           "type": "string",
-          "description": "Generated toolpath or CAM operation revision version."
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
+        },
+        "cam_toolpath_cas": {
+          "type": "string",
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
+        },
+        "tolerances_mm": {
+          "type": "number",
+          "exclusiveMinimum": 0
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

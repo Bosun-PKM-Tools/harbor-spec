@@ -1,57 +1,79 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/18-commonplace.schema.json",
-  "title": "Bosun Realm 18: Commonplace Contract v1",
-  "description": "Machine-readable delta schema contract for Commonplace (Realm 18), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/commonplace.schema.json",
+  "title": "Commonplace Realm Schema (18)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$commonplace"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "commonplace",
-              "description": "Canonical realm identifier for Commonplace."
-            }
-          }
+        "realm": {
+          "const": "commonplace"
         },
-        "isbn13": {
-          "type": "string",
-          "pattern": "^[0-9]{13}$",
-          "description": "13-digit ISBN book identifier."
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$commonplace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "author",
+        "media_format",
+        "reading_status"
+      ],
+      "properties": {
+        "author": {
+          "type": "string"
         },
-        "creator": {
-          "type": "string",
-          "description": "Primary author, artist, or creator of the work."
-        },
-        "shelf_state": {
+        "media_format": {
           "type": "string",
           "enum": [
-            "to_read",
+            "book_hardcover",
+            "book_paperback",
+            "ebook",
+            "audiobook",
+            "monograph",
+            "essay"
+          ]
+        },
+        "reading_status": {
+          "type": "string",
+          "enum": [
+            "queued",
             "reading",
-            "read",
+            "finished",
             "abandoned",
             "reference"
-          ],
-          "description": "Reading or curation shelf state."
+          ]
         },
-        "rating": {
+        "isbn_13": {
+          "type": "string",
+          "pattern": "^(978|979)[0-9]{10}$"
+        },
+        "publication_year": {
+          "type": "integer",
+          "minimum": 1400
+        },
+        "rating_out_of_five": {
           "type": "number",
-          "minimum": 0,
-          "maximum": 5,
-          "description": "Five-star or numeric quality evaluation rating."
+          "minimum": 1.0,
+          "maximum": 5.0
+        },
+        "w3c_annotations_count": {
+          "type": "integer",
+          "minimum": 0
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

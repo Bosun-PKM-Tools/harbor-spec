@@ -1,43 +1,96 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/20-marquee.schema.json",
-  "title": "Bosun Realm 20: Marquee Contract v1",
-  "description": "Machine-readable delta schema contract for Marquee (Realm 20), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/marquee.schema.json",
+  "title": "Marquee Realm Schema (20)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$marquee"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "marquee",
-              "description": "Canonical realm identifier for Marquee."
-            }
-          }
+        "realm": {
+          "const": "marquee"
         },
-        "timecode_in": {
-          "type": "string",
-          "description": "Starting SMPTE timecode (HH:MM:SS:FF) or timestamp."
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$marquee": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reel_identifier",
+        "resolution",
+        "frame_rate",
+        "codec",
+        "media_cas"
+      ],
+      "properties": {
+        "reel_identifier": {
+          "type": "string"
         },
-        "timecode_out": {
+        "resolution": {
           "type": "string",
-          "description": "Ending SMPTE timecode (HH:MM:SS:FF) or timestamp."
+          "enum": [
+            "1080p",
+            "4k_uhd",
+            "4k_dci",
+            "6k",
+            "8k"
+          ]
         },
-        "rush_bin": {
+        "frame_rate": {
+          "type": "number",
+          "enum": [
+            23.976,
+            24.0,
+            25.0,
+            29.97,
+            30.0,
+            50.0,
+            59.94,
+            60.0,
+            120.0
+          ]
+        },
+        "codec": {
           "type": "string",
-          "description": "Editorial footage bin or take categorization."
+          "enum": [
+            "prores_422hq",
+            "prores_4444",
+            "dnxhr",
+            "braw",
+            "h265_10bit",
+            "av1"
+          ]
+        },
+        "color_space": {
+          "type": "string",
+          "enum": [
+            "rec709",
+            "rec2020",
+            "davinci_wide_gamut",
+            "acescct",
+            "log_c"
+          ]
+        },
+        "media_cas": {
+          "type": "string",
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
+        },
+        "take_number": {
+          "type": "integer",
+          "minimum": 1
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }
