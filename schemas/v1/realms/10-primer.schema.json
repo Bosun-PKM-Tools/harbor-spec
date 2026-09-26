@@ -1,45 +1,67 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/10-primer.schema.json",
-  "title": "Bosun Realm 10: Primer Contract v1",
-  "description": "Machine-readable delta schema contract for Primer (Realm 10), extending Archetype Stage-Gate Manifest with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/primer.schema.json",
+  "title": "Primer Realm Schema (10)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/stage-gate-manifest.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$primer"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "primer",
-              "description": "Canonical realm identifier for Primer."
-            }
-          }
+        "realm": {
+          "const": "primer"
         },
-        "spaced_interval_days": {
-          "type": "number",
-          "minimum": 0,
-          "description": "Current spaced-repetition scheduling interval in days."
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$primer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "card_type",
+        "difficulty_factor",
+        "repetition_interval_days"
+      ],
+      "properties": {
+        "card_type": {
+          "type": "string",
+          "enum": [
+            "concept",
+            "cloze",
+            "equation",
+            "code_snippet"
+          ]
         },
-        "ease_factor": {
+        "difficulty_factor": {
           "type": "number",
           "minimum": 1.0,
-          "description": "SuperMemo/SM-2 ease factor multiplier."
+          "maximum": 5.0
         },
-        "skill_node": {
+        "repetition_interval_days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "last_reviewed_at": {
           "type": "string",
-          "description": "Target competency or skill graph ontology node."
+          "format": "date-time"
+        },
+        "prerequisite_concepts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

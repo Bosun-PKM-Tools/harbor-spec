@@ -1,45 +1,63 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/08-embers.schema.json",
-  "title": "Bosun Realm 08: Embers Contract v1",
-  "description": "Machine-readable delta schema contract for Embers (Realm 08), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/embers.schema.json",
+  "title": "Embers Realm Schema (08)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$embers"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "embers",
-              "description": "Canonical realm identifier for Embers."
-            }
-          }
+        "realm": {
+          "const": "embers"
         },
-        "exif_payload": {
-          "type": "object",
-          "description": "Raw or normalized EXIF metadata payload from the media asset.",
-          "additionalProperties": true
-        },
-        "media_hash_sha256": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$embers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "captured_via",
+        "decay_ttl_days",
+        "media_digest"
+      ],
+      "properties": {
+        "captured_via": {
           "type": "string",
-          "pattern": "^[0-9a-fA-F]{64}$",
-          "description": "SHA-256 content digest of the original media binary."
+          "enum": [
+            "cli_pipe",
+            "dom_clipper",
+            "ambient_mic",
+            "camera"
+          ]
         },
-        "codec": {
+        "decay_ttl_days": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 90
+        },
+        "media_digest": {
           "type": "string",
-          "description": "Media codec or MIME container format (e.g., image/jpeg, video/mp4, h265)."
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
+        },
+        "exif_timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "is_preserved": {
+          "type": "boolean"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

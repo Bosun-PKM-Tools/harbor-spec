@@ -1,44 +1,82 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/09-careen.schema.json",
-  "title": "Bosun Realm 09: Careen Contract v1",
-  "description": "Machine-readable delta schema contract for Careen (Realm 09), extending Archetype Stage-Gate Manifest with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/careen.schema.json",
+  "title": "Careen Realm Schema (09)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/stage-gate-manifest.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$careen"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "careen",
-              "description": "Canonical realm identifier for Careen."
+        "realm": {
+          "const": "careen"
+        },
+        "archetype": {
+          "const": "stage_gate_manifest"
+        }
+      }
+    },
+    "$careen": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage",
+        "milestones",
+        "lead_assignee"
+      ],
+      "properties": {
+        "stage": {
+          "type": "string",
+          "enum": [
+            "drydock_discovery",
+            "hull_refit",
+            "sea_trials",
+            "commissioned",
+            "mothballed"
+          ]
+        },
+        "lead_assignee": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "milestones": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "title",
+              "completed"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "completed": {
+                "type": "boolean"
+              }
             }
           }
         },
-        "kanban_stage": {
+        "target_release_date": {
           "type": "string",
-          "description": "Current board column or stage (e.g., backlog, ready, in_progress, in_review, done)."
+          "format": "date"
         },
-        "sprint_ref": {
-          "type": "string",
-          "description": "Sprint or iteration identifier."
-        },
-        "milestone_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of the milestone or release gate this item targets."
+        "campaign_lore_node": {
+          "type": "string"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

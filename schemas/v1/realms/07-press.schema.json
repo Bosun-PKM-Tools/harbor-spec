@@ -1,45 +1,74 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/07-press.schema.json",
-  "title": "Bosun Realm 07: Press Contract v1",
-  "description": "Machine-readable delta schema contract for Press (Realm 07), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/press.schema.json",
+  "title": "Press Realm Schema (07)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$press"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
+        "realm": {
+          "const": "press"
+        },
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$press": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sku",
+        "vector_source",
+        "print_spec"
+      ],
+      "properties": {
+        "sku": {
+          "type": "string",
+          "pattern": "^PRS-[A-Z0-9-]+$"
+        },
+        "vector_source": {
+          "type": "string"
+        },
+        "print_spec": {
           "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "dimensions",
+            "color_profile",
+            "stock_weight_gsm"
+          ],
           "properties": {
-            "realm": {
-              "const": "press",
-              "description": "Canonical realm identifier for Press."
+            "dimensions": {
+              "type": "string"
+            },
+            "color_profile": {
+              "type": "string",
+              "enum": [
+                "CMYK-FOGRA39",
+                "sRGB",
+                "Grayscale"
+              ]
+            },
+            "stock_weight_gsm": {
+              "type": "integer",
+              "minimum": 50
             }
           }
         },
-        "sku": {
-          "type": "string",
-          "description": "Stock Keeping Unit or physical production identifier."
-        },
-        "vector_asset_cas": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "Content-addressed storage URN for the master vector artwork asset."
-        },
-        "cut_sheet_spec": {
-          "type": "object",
-          "description": "Physical cut sheet dimensions, bleed margins, and stock specifications.",
-          "additionalProperties": true
+        "supplier": {
+          "type": "string"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

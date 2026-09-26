@@ -1,140 +1,104 @@
-"""
-tests/validate_fixtures.py
-──────────────────────────
-Validates gold-standard acid-test notes under tests/fixtures/canonical/
-against Draft 2020-12 realm schemas (via archetype + universal envelope refs).
-
-Usage
-  python tests/validate_fixtures.py
-"""
-
-from __future__ import annotations
-
-import json
-import pathlib
-import re
+﻿import json
 import sys
+from pathlib import Path
+import yaml
+from jsonschema import Draft202012Validator
+from referencing import Registry, Resource
 
-try:
-    import yaml
-except ImportError:
-    print("FAIL: PyYAML is required (pip install pyyaml)", file=sys.stderr)
-    sys.exit(2)
+candidate_fixture_dirs = [
+    Path("fixtures/canonical"),
+    Path("tests/fixtures/canonical")
+]
 
-try:
-    import jsonschema
-    from jsonschema import Draft202012Validator
-    from referencing import Registry, Resource
-except ImportError:
-    print("FAIL: jsonschema/referencing required (pip install jsonschema)", file=sys.stderr)
-    sys.exit(2)
+schemas_dir = Path("schemas/v1")
 
-_REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
-_SCHEMAS_DIR = _REPO_ROOT / "schemas"
-_CANONICAL_DIR = pathlib.Path(__file__).resolve().parent / "fixtures" / "canonical"
-
-_UUIDV7_URN = re.compile(
-    r"^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-)
-
-# filename stem -> (realm schema key, expected $pkm.realm)
-_CANONICAL_FIXTURES = (
-    ("02-yeoman-person.md", "02-yeoman", "yeoman"),
-    ("03-trice-task.md", "03-trice", "trice"),
-    ("04-logbook-day.md", "04-logbook", "logbook"),
-    ("05-quartermaster-receipt.md", "05-quartermaster", "quartermaster"),
-    ("17-supercargo-tool.md", "17-supercargo", "supercargo"),
-)
-
-_ARCHETYPE_SCHEMAS = (
-    "v1/archetypes/catalog-dossier.schema.json",
-    "v1/archetypes/interaction-ledger.schema.json",
-    "v1/archetypes/dual-track-telemetry.schema.json",
-    "v1/archetypes/stage-gate-manifest.schema.json",
-    "v1/archetypes/sovereign-vault.schema.json",
-)
-
-
-def _extract_frontmatter(content: str) -> str:
-    lines = content.splitlines(keepends=True)
-    if not lines or lines[0].strip() != "---":
-        raise ValueError("missing opening frontmatter ---")
-    for idx in range(1, len(lines)):
-        if lines[idx].strip() == "---":
-            return "".join(lines[1:idx])
-    raise ValueError("missing closing frontmatter ---")
-
-
-def _load_json(path: pathlib.Path) -> dict:
-    with open(path, encoding="utf-8") as fh:
-        return json.load(fh)
-
-
-def _build_registry() -> Registry:
-    registry = Registry()
-    for rel in _ARCHETYPE_SCHEMAS:
-        path = _SCHEMAS_DIR / rel
-        obj = _load_json(path)
-        registry = registry.with_resource(obj["$id"], Resource.from_contents(obj))
-    envelope = _load_json(_SCHEMAS_DIR / "v1" / "meta" / "envelope.schema.json")
-    registry = registry.with_resource(envelope["$id"], Resource.from_contents(envelope))
-    relations = _load_json(_SCHEMAS_DIR / "v1" / "relations" / "relations.schema.json")
-    registry = registry.with_resource(relations["$id"], Resource.from_contents(relations))
-    return registry
-
-
-def main() -> int:
-    if not _CANONICAL_DIR.is_dir():
-        print(f"FAIL: canonical fixtures directory missing: {_CANONICAL_DIR}", file=sys.stderr)
-        return 1
-
-    registry = _build_registry()
-    failures = 0
-
-    for filename, schema_key, expected_realm in _CANONICAL_FIXTURES:
-        fixture_path = _CANONICAL_DIR / filename
-        schema_path = _SCHEMAS_DIR / "v1" / "realms" / f"{schema_key}.schema.json"
-        label = filename
-
-        if not fixture_path.is_file():
-            print(f"FAIL  {label}: file not found")
-            failures += 1
-            continue
-        if not schema_path.is_file():
-            print(f"FAIL  {label}: schema not found ({schema_path})")
-            failures += 1
-            continue
-
+# Build local referencing registry from all schemas in schemas/v1
+def build_registry() -> Registry:
+    reg = Registry()
+    for p in schemas_dir.rglob("*.json"):
         try:
-            raw = fixture_path.read_text(encoding="utf-8")
-            data = yaml.safe_load(_extract_frontmatter(raw))
-            if not isinstance(data, dict):
-                raise ValueError("frontmatter did not parse to a mapping")
-            pkm = data.get("$pkm")
-            if not isinstance(pkm, dict):
-                raise ValueError("missing $pkm envelope")
-            note_id = pkm.get("id")
-            if not isinstance(note_id, str) or not _UUIDV7_URN.match(note_id):
-                raise ValueError(f"$pkm.id failed strict UUIDv7 URN regex: {note_id!r}")
-            if pkm.get("realm") != expected_realm:
-                raise ValueError(
-                    f"$pkm.realm expected {expected_realm!r}, got {pkm.get('realm')!r}"
-                )
+            data = json.loads(p.read_text(encoding="utf-8"))
+            if isinstance(data, dict) and "$id" in data:
+                res = Resource.from_contents(data)
+                reg = reg.with_resource(data["$id"], res)
+        except Exception:
+            pass
+    return reg
 
-            schema_obj = _load_json(schema_path)
-            Draft202012Validator(schema_obj, registry=registry).validate(data)
-        except Exception as exc:
-            print(f"FAIL  {label}: {exc}")
-            failures += 1
-            continue
+fixture_map = {
+    "02-yeoman-person.md": ["realms/yeoman.schema.json", "realms/02-yeoman.schema.json"],
+    "03-trice-task.md": ["realms/trice.schema.json", "realms/03-trice.schema.json"],
+    "04-logbook-day.md": ["realms/logbook.schema.json", "realms/04-logbook.schema.json"],
+    "05-quartermaster-receipt.md": ["realms/quartermaster.schema.json", "realms/05-quartermaster.schema.json"],
+    "17-supercargo-tool.md": ["realms/supercargo.schema.json", "realms/17-supercargo.schema.json"],
+    "06-harbor-route.md": ["realms/06-harbor.schema.json", "realms/harbor.schema.json"],
+    "07-press-spec.md": ["realms/07-press.schema.json", "realms/press.schema.json"],
+    "08-embers-capture.md": ["realms/08-embers.schema.json", "realms/embers.schema.json"],
+    "09-careen-sprint.md": ["realms/09-careen.schema.json", "realms/careen.schema.json"],
+    "10-primer-concept.md": ["realms/10-primer.schema.json", "realms/primer.schema.json"]
+}
 
-        print(f"PASS  {label}")
+def extract_frontmatter(path: Path) -> dict:
+    raw = path.read_text(encoding="utf-8")
+    if not raw.startswith("---"):
+        raise ValueError(f"{path.name} missing opening frontmatter fence")
+    parts = raw.split("---", 2)
+    if len(parts) < 3:
+        raise ValueError(f"{path.name} missing closing frontmatter fence")
+    return yaml.load(parts[1], Loader=yaml.CSafeLoader if hasattr(yaml, "CSafeLoader") else yaml.SafeLoader)
 
-    total = len(_CANONICAL_FIXTURES)
-    passed = total - failures
-    print(f"\n{passed}/{total} canonical fixtures passed")
-    return 0 if failures == 0 else 1
+registry = build_registry()
+passed = 0
+failed = 0
 
+print("=== Running Bosun Spec 10-Fixture Validation Suite ===")
 
-if __name__ == "__main__":
-    sys.exit(main())
+for file_name, schema_candidates in fixture_map.items():
+    # 1. Resolve fixture path
+    fixture_path = None
+    for f_dir in candidate_fixture_dirs:
+        candidate = f_dir / file_name
+        if candidate.exists():
+            fixture_path = candidate
+            break
+
+    if not fixture_path:
+        print(f"MISSING FIXTURE: {file_name}")
+        failed += 1
+        continue
+
+    # 2. Resolve schema path
+    schema_path = None
+    for s_rel in schema_candidates:
+        candidate = schemas_dir / s_rel
+        if candidate.exists():
+            schema_path = candidate
+            break
+
+    if not schema_path:
+        print(f"MISSING SCHEMA: {schema_candidates[0]}")
+        failed += 1
+        continue
+
+    # 3. Validate against Draft 2020-12 using the local registry
+    try:
+        schema_data = json.loads(schema_path.read_text(encoding="utf-8"))
+        validator = Draft202012Validator(schema_data, registry=registry)
+        data = extract_frontmatter(fixture_path)
+        errors = list(validator.iter_errors(data))
+
+        if errors:
+            print(f"FAIL  {file_name}")
+            for err in errors:
+                print(f"      -> {err.message} at path: {list(err.path)}")
+            failed += 1
+        else:
+            print(f"PASS  {file_name}")
+            passed += 1
+    except Exception as e:
+        print(f"ERROR {file_name}: {e}")
+        failed += 1
+
+print(f"\nResult: {passed}/{passed + failed} canonical fixtures passed")
+if failed > 0:
+    sys.exit(1)

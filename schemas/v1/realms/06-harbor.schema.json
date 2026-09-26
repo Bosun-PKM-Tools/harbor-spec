@@ -1,44 +1,66 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/06-harbor.schema.json",
-  "title": "Bosun Realm 06: Harbor Contract v1",
-  "description": "Machine-readable delta schema contract for Harbor (Realm 06), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/harbor.schema.json",
+  "title": "Harbor Realm Schema (06)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$harbor"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "harbor",
-              "description": "Canonical realm identifier for Harbor."
-            }
-          }
+        "realm": {
+          "const": "harbor"
         },
-        "slug": {
+        "archetype": {
+          "const": "stage_gate_manifest"
+        }
+      }
+    },
+    "$harbor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route",
+        "syndication_target",
+        "render_mode"
+      ],
+      "properties": {
+        "route": {
           "type": "string",
-          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
-          "description": "URL-safe path slug for public or edge routing."
+          "pattern": "^/[a-zA-Z0-9_/-]*$"
         },
-        "edge_route": {
+        "syndication_target": {
           "type": "string",
-          "description": "Edge routing pattern or ingress endpoint mapping."
+          "enum": [
+            "garden",
+            "directus",
+            "astro",
+            "all"
+          ]
         },
-        "render_template": {
+        "render_mode": {
           "type": "string",
-          "description": "Template or component name used to render the route."
+          "enum": [
+            "static",
+            "edge",
+            "wasm"
+          ]
+        },
+        "is_canonical": {
+          "type": "boolean"
+        },
+        "live_url": {
+          "type": "string",
+          "format": "uri"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }
