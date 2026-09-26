@@ -1,45 +1,99 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/40-tribute.schema.json",
-  "title": "Bosun Realm 40: Tribute Contract v1",
-  "description": "Machine-readable delta schema contract for Tribute (Realm 40), extending Archetype Interaction Ledger and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/tribute.schema.json",
+  "title": "Tribute Realm Schema (40)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/interaction-ledger.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$tribute"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
+        "realm": {
+          "const": "tribute"
+        },
+        "archetype": {
+          "const": "interaction_ledger"
+        }
+      }
+    },
+    "$tribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recipient_ref",
+        "occasion_calendar",
+        "gift_history"
+      ],
+      "properties": {
+        "recipient_ref": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "sizing_profile": {
           "type": "object",
-          "properties": {
-            "realm": {
-              "const": "tribute",
-              "description": "Canonical realm identifier for Tribute."
+          "additionalProperties": true
+        },
+        "occasion_calendar": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "occasion",
+              "date_recurring"
+            ],
+            "properties": {
+              "occasion": {
+                "type": "string"
+              },
+              "date_recurring": {
+                "type": "string",
+                "pattern": "^[0-9]{2}-[0-9]{2}$"
+              }
             }
           }
         },
-        "recipient_contact_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of recipient contact receiving gift or tribute."
-        },
-        "sizing_chart_profile": {
-          "type": "object",
-          "description": "Sizing preferences, measurements, and stylistic attributes.",
-          "additionalProperties": true
-        },
-        "reciprocity_balance": {
-          "type": "number",
-          "description": "Net gift reciprocity exchange balance metric."
+        "gift_history": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "year",
+              "item_description",
+              "cost_usd",
+              "reciprocity_direction"
+            ],
+            "properties": {
+              "year": {
+                "type": "integer",
+                "minimum": 1900
+              },
+              "item_description": {
+                "type": "string"
+              },
+              "cost_usd": {
+                "type": "number",
+                "minimum": 0
+              },
+              "reciprocity_direction": {
+                "type": "string",
+                "enum": [
+                  "given",
+                  "received"
+                ]
+              }
+            }
+          }
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

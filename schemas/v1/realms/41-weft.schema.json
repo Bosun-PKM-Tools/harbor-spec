@@ -1,49 +1,114 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/41-weft.schema.json",
-  "title": "Bosun Realm 41: Weft Contract v1",
-  "description": "Machine-readable delta schema contract for Weft (Realm 41), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/weft.schema.json",
+  "title": "Weft Realm Schema (41)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$weft"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
+        "realm": {
+          "const": "weft"
+        },
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$weft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "item_type",
+        "fiber_composition",
+        "care_instructions",
+        "condition"
+      ],
+      "properties": {
+        "item_type": {
+          "type": "string",
+          "enum": [
+            "outerwear_foul_weather",
+            "technical_layer",
+            "footwear",
+            "tailored_suit",
+            "canvas_workwear"
+          ]
+        },
+        "brand": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "condition": {
+          "type": "string",
+          "enum": [
+            "new",
+            "excellent",
+            "serviceable",
+            "repaired",
+            "retired"
+          ]
+        },
+        "fiber_composition": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "material",
+              "percentage"
+            ],
+            "properties": {
+              "material": {
+                "type": "string"
+              },
+              "percentage": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              }
+            }
+          },
+          "minItems": 1
+        },
+        "care_instructions": {
           "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "wash_temp_c",
+            "dry_method"
+          ],
           "properties": {
-            "realm": {
-              "const": "weft",
-              "description": "Canonical realm identifier for Weft."
+            "wash_temp_c": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 90
+            },
+            "dry_method": {
+              "type": "string",
+              "enum": [
+                "tumble_low",
+                "line_dry",
+                "dry_flat",
+                "do_not_tumble"
+              ]
+            },
+            "dwr_reproof_recommended": {
+              "type": "boolean"
             }
           }
-        },
-        "garment_category": {
-          "type": "string",
-          "description": "Sartorial category (e.g. 'outerwear', 'tailoring', 'knitwear', 'footwear')."
-        },
-        "textile_composition": {
-          "type": "object",
-          "description": "Fiber percentages mapping (e.g. {'wool': 90, 'cashmere': 10}).",
-          "additionalProperties": true
-        },
-        "care_wash_spec": {
-          "type": "string",
-          "description": "Garment care and laundering protocol instructions."
-        },
-        "tailoring_measurements": {
-          "type": "object",
-          "description": "Detailed physical garment measurements (chest, sleeve, waist, inseam).",
-          "additionalProperties": true
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

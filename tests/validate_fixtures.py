@@ -66,7 +66,13 @@ fixture_map = {
     "33-purser-subscription.md": ["realms/33-purser.schema.json", "realms/purser.schema.json"],
     "34-cadence-routine.md": ["realms/34-cadence.schema.json", "realms/cadence.schema.json"],
     "35-reckoning-heuristic.md": ["realms/35-reckoning.schema.json", "realms/reckoning.schema.json"],
-    "36-strongbox-key.md": ["realms/36-strongbox.schema.json", "realms/strongbox.schema.json"]
+    "36-strongbox-key.md": ["realms/36-strongbox.schema.json", "realms/strongbox.schema.json"],
+    # Wave 8 (Realms 37-41)
+    "37-trajectory-posting.md": ["realms/37-trajectory.schema.json", "realms/trajectory.schema.json"],
+    "38-binnacle-axiom.md": ["realms/38-binnacle.schema.json", "realms/binnacle.schema.json"],
+    "39-claim-patent.md": ["realms/39-claim.schema.json", "realms/claim.schema.json"],
+    "40-tribute-registry.md": ["realms/40-tribute.schema.json", "realms/tribute.schema.json"],
+    "41-weft-garment.md": ["realms/41-weft.schema.json", "realms/weft.schema.json"]
 }
 
 def extract_frontmatter(path: Path) -> dict:
@@ -82,7 +88,7 @@ registry = build_registry()
 passed = 0
 failed = 0
 
-print("=== Running Bosun Spec 35-Fixture Validation Suite ===")
+print("=== Running Bosun Spec 40-Fixture Validation Suite ===")
 
 for file_name, schema_candidates in fixture_map.items():
     fixture_path = None

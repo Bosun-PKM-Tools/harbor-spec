@@ -1,46 +1,65 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/38-binnacle.schema.json",
-  "title": "Bosun Realm 38: Binnacle Contract v1",
-  "description": "Machine-readable delta schema contract for Binnacle (Realm 38), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/binnacle.schema.json",
+  "title": "Binnacle Realm Schema (38)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$binnacle"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "binnacle",
-              "description": "Canonical realm identifier for Binnacle."
-            }
-          }
+        "realm": {
+          "const": "binnacle"
         },
-        "theological_tradition": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$binnacle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credo_name",
+        "tradition",
+        "axiom",
+        "corollaries"
+      ],
+      "properties": {
+        "credo_name": {
+          "type": "string"
+        },
+        "tradition": {
           "type": "string",
-          "description": "Philosophical, theological, or ethical tradition."
+          "enum": [
+            "stoicism",
+            "existentialism",
+            "christian_theology",
+            "pragmatism",
+            "virtue_ethics"
+          ]
         },
-        "credo_axiom_key": {
-          "type": "string",
-          "description": "Foundational doctrinal or ethical axiom key identifier."
+        "axiom": {
+          "type": "string"
         },
-        "canonical_scripture_refs": {
+        "canonical_source": {
+          "type": "string"
+        },
+        "corollaries": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Canonical book/chapter/verse or treaty references."
+          "minItems": 1
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

@@ -1,52 +1,78 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/37-trajectory.schema.json",
-  "title": "Bosun Realm 37: Trajectory Contract v1",
-  "description": "Machine-readable delta schema contract for Trajectory (Realm 37), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/trajectory.schema.json",
+  "title": "Trajectory Realm Schema (37)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$trajectory"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "trajectory",
-              "description": "Canonical realm identifier for Trajectory."
-            }
-          }
+        "realm": {
+          "const": "trajectory"
         },
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$trajectory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role_title",
+        "organization",
+        "start_date",
+        "is_current",
+        "verified_skills"
+      ],
+      "properties": {
         "role_title": {
-          "type": "string",
-          "description": "Professional or operational appointment title."
+          "type": "string"
         },
-        "organization_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN referencing the employing or associated institution."
+        "organization": {
+          "type": "string"
         },
-        "tenure_start": {
+        "start_date": {
           "type": "string",
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-          "description": "Start date of appointment or tenure (YYYY-MM-DD)."
+          "format": "date"
         },
-        "case_study_slugs": {
+        "end_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "is_current": {
+          "type": "boolean"
+        },
+        "employment_type": {
+          "type": "string",
+          "enum": [
+            "freelance",
+            "full_time",
+            "contract",
+            "advisory",
+            "founder"
+          ]
+        },
+        "compensation_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "verified_skills": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "Slugs of published portfolio projects or case studies."
+          "minItems": 1
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

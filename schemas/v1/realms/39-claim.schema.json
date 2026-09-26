@@ -1,52 +1,97 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/39-claim.schema.json",
-  "title": "Bosun Realm 39: Claim Contract v1",
-  "description": "Machine-readable delta schema contract for Claim (Realm 39), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/claim.schema.json",
+  "title": "Claim Realm Schema (39)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$claim"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "claim",
-              "description": "Canonical realm identifier for Claim."
-            }
-          }
+        "realm": {
+          "const": "claim"
         },
-        "patent_number": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ip_type",
+        "title",
+        "filing_status",
+        "claims"
+      ],
+      "properties": {
+        "ip_type": {
           "type": "string",
-          "description": "Registered patent or utility application identifier."
+          "enum": [
+            "patent_utility",
+            "patent_design",
+            "trademark",
+            "trade_secret",
+            "copyright"
+          ]
         },
-        "jurisdiction_office": {
+        "title": {
+          "type": "string"
+        },
+        "filing_status": {
           "type": "string",
-          "description": "Patent examination authority (e.g. 'USPTO', 'EPO', 'JPO')."
+          "enum": [
+            "prior_art_search",
+            "provisional_filed",
+            "non_provisional_pending",
+            "granted",
+            "abandoned"
+          ]
+        },
+        "application_number": {
+          "type": "string"
+        },
+        "grant_number": {
+          "type": "string"
         },
         "filing_date": {
           "type": "string",
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-          "description": "Priority filing date (YYYY-MM-DD)."
+          "format": "date"
         },
-        "prior_art_urns": {
+        "claims": {
           "type": "array",
           "items": {
-            "type": "string",
-            "pattern": "^urn:[a-zA-Z0-9_.:-]+$"
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "claim_number",
+              "claim_text",
+              "is_independent"
+            ],
+            "properties": {
+              "claim_number": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "claim_text": {
+                "type": "string"
+              },
+              "is_independent": {
+                "type": "boolean"
+              }
+            }
           },
-          "description": "URN references to cited prior art disclosures."
+          "minItems": 1
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }
