@@ -1,50 +1,76 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/29-arbor.schema.json",
-  "title": "Bosun Realm 29: Arbor Contract v1",
-  "description": "Machine-readable delta schema contract for Arbor (Realm 29), extending Archetype Catalog Dossier and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/arbor.schema.json",
+  "title": "Arbor Realm Schema (29)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$arbor"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "arbor",
-              "description": "Canonical realm identifier for Arbor."
-            }
-          }
+        "realm": {
+          "const": "arbor"
         },
-        "taxonomic_species": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$arbor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "botanical_name",
+        "cultivar",
+        "growth_habit",
+        "sun_exposure"
+      ],
+      "properties": {
+        "botanical_name": {
+          "type": "string"
+        },
+        "common_name": {
+          "type": "string"
+        },
+        "cultivar": {
+          "type": "string"
+        },
+        "growth_habit": {
           "type": "string",
-          "description": "Botanical binomial nomenclature (e.g. 'Quercus alba')."
+          "enum": [
+            "annual",
+            "biennial",
+            "perennial",
+            "deciduous_tree",
+            "evergreen_shrub",
+            "vine"
+          ]
         },
-        "seed_vintage_year": {
+        "sun_exposure": {
+          "type": "string",
+          "enum": [
+            "full_sun",
+            "partial_shade",
+            "full_shade"
+          ]
+        },
+        "days_to_maturity": {
           "type": "integer",
-          "minimum": 1800,
-          "description": "Harvest vintage year of seed stock or propagation."
-        },
-        "planting_zone": {
-          "type": "string",
-          "description": "USDA / RHS plant hardiness zone (e.g. '7b', 'H4')."
+          "minimum": 1
         },
         "soil_ph_optimal": {
           "type": "number",
-          "minimum": 0.0,
-          "maximum": 14.0,
-          "description": "Optimal soil pH value."
+          "minimum": 3.5,
+          "maximum": 9.0
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

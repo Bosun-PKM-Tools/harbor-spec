@@ -1,50 +1,73 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/31-dispatch.schema.json",
-  "title": "Bosun Realm 31: Dispatch Contract v1",
-  "description": "Machine-readable delta schema contract for Dispatch (Realm 31), extending Archetype Interaction Ledger and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/dispatch.schema.json",
+  "title": "Dispatch Realm Schema (31)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/interaction-ledger.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$dispatch"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "dispatch",
-              "description": "Canonical realm identifier for Dispatch."
-            }
-          }
+        "realm": {
+          "const": "dispatch"
         },
-        "sender_urn": {
+        "archetype": {
+          "const": "interaction_ledger"
+        }
+      }
+    },
+    "$dispatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "direction",
+        "channel",
+        "correspondent_ref",
+        "subject"
+      ],
+      "properties": {
+        "direction": {
           "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of the sending party or agent."
+          "enum": [
+            "inbound",
+            "outbound"
+          ]
         },
-        "recipient_urn": {
+        "channel": {
           "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN of the receiving party or destination."
+          "enum": [
+            "physical_mail",
+            "certified_postal",
+            "email",
+            "courier",
+            "telex"
+          ]
         },
-        "postmark_date": {
+        "correspondent_ref": {
           "type": "string",
-          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
-          "description": "Postal or dispatch acceptance date (YYYY-MM-DD)."
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
         },
-        "courier_tracking": {
+        "subject": {
+          "type": "string"
+        },
+        "tracking_number": {
+          "type": "string"
+        },
+        "requires_response": {
+          "type": "boolean"
+        },
+        "delivered_date": {
           "type": "string",
-          "description": "Waybill or tracking identifier from courier carrier."
+          "format": "date"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

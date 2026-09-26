@@ -54,11 +54,17 @@ fixture_map = {
     "23-docent-citation.md": ["realms/23-docent.schema.json", "realms/docent.schema.json"],
     "24-proctor-contract.md": ["realms/24-proctor.schema.json", "realms/proctor.schema.json"],
     "25-ropewalk-repo.md": ["realms/25-ropewalk.schema.json", "realms/ropewalk.schema.json"],
-    "26-gavel-minutes.md": ["realms/26-gavel.schema.json", "realms/gavel.schema.json"]
+    "26-gavel-minutes.md": ["realms/26-gavel.schema.json", "realms/gavel.schema.json"],
+    # Wave 6 (Realms 27-31)
+    "27-lineage-individual.md": ["realms/27-lineage.schema.json", "realms/lineage.schema.json"],
+    "28-legacy-trust.md": ["realms/28-legacy.schema.json", "realms/legacy.schema.json"],
+    "29-arbor-cultivar.md": ["realms/29-arbor.schema.json", "realms/arbor.schema.json"],
+    "30-the_glass-barometer.md": ["realms/30-the_glass.schema.json", "realms/the_glass.schema.json"],
+    "31-dispatch-letter.md": ["realms/31-dispatch.schema.json", "realms/dispatch.schema.json"]
 }
 
 def extract_frontmatter(path: Path) -> dict:
-    raw = path.read_text(encoding="utf-8")
+    raw = path.read_text(encoding="utf-8").lstrip("\r\n\ufeff")
     if not raw.startswith("---"):
         raise ValueError(f"{path.name} missing opening frontmatter fence")
     parts = raw.split("---", 2)
@@ -70,7 +76,7 @@ registry = build_registry()
 passed = 0
 failed = 0
 
-print("=== Running Bosun Spec 25-Fixture Validation Suite ===")
+print("=== Running Bosun Spec 30-Fixture Validation Suite ===")
 
 for file_name, schema_candidates in fixture_map.items():
     fixture_path = None

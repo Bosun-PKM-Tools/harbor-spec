@@ -1,50 +1,76 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/28-legacy.schema.json",
-  "title": "Bosun Realm 28: Legacy Contract v1",
-  "description": "Machine-readable delta schema contract for Legacy (Realm 28), extending Archetype Sovereign Vault and Universal Meta-Envelope with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/legacy.schema.json",
+  "title": "Legacy Realm Schema (28)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/sovereign-vault.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$legacy"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "legacy",
-              "description": "Canonical realm identifier for Legacy."
-            }
+        "realm": {
+          "const": "legacy"
+        },
+        "archetype": {
+          "const": "sovereign_vault"
+        }
+      }
+    },
+    "$legacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "instrument_type",
+        "payload_cas_urn",
+        "encryption_format",
+        "primary_executor"
+      ],
+      "properties": {
+        "instrument_type": {
+          "type": "string",
+          "enum": [
+            "will_testament",
+            "revocable_trust",
+            "power_of_attorney",
+            "healthcare_proxy",
+            "dead_man_manifest"
+          ]
+        },
+        "payload_cas_urn": {
+          "type": "string",
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
+        },
+        "encryption_format": {
+          "type": "string",
+          "enum": [
+            "age-x25519",
+            "age-armor",
+            "fips-140-3-hsm"
+          ]
+        },
+        "primary_executor": {
+          "type": "string",
+          "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "witness_identities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
           }
         },
-        "trust_ref": {
+        "last_attestation_date": {
           "type": "string",
-          "description": "Reference identifier to legal trust or estate instrument."
-        },
-        "living_will_cas": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "CAS hash or URN of the encrypted advance healthcare directive / living will."
-        },
-        "executor_contact_urn": {
-          "type": "string",
-          "pattern": "^urn:[a-zA-Z0-9_.:-]+$",
-          "description": "URN referencing the appointed executor contact."
-        },
-        "durable_poa_hash": {
-          "type": "string",
-          "pattern": "^[0-9a-fA-F]{64}$",
-          "description": "SHA-256 digest of the durable power of attorney deed."
+          "format": "date"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

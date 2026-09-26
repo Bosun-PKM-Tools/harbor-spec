@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/the_glass.schema.json",
+  "title": "The Glass Realm Schema (30)",
+  "type": "object",
+  "required": [
+    "$pkm",
+    "$the_glass"
+  ],
+  "properties": {
+    "$pkm": {
+      "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
+      "properties": {
+        "realm": {
+          "const": "the_glass"
+        },
+        "archetype": {
+          "const": "dual_track_telemetry"
+        }
+      }
+    },
+    "$the_glass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "station_id",
+        "telemetry_sink",
+        "barometric_trend",
+        "sea_level_pressure_hpa"
+      ],
+      "properties": {
+        "station_id": {
+          "type": "string"
+        },
+        "telemetry_sink": {
+          "type": "string",
+          "pattern": "^.+[.]parquet$"
+        },
+        "sea_level_pressure_hpa": {
+          "type": "number",
+          "minimum": 850.0,
+          "maximum": 1090.0
+        },
+        "barometric_trend": {
+          "type": "string",
+          "enum": [
+            "rising_rapidly",
+            "rising_slowly",
+            "steady",
+            "falling_slowly",
+            "falling_rapidly"
+          ]
+        },
+        "wind_speed_knots": {
+          "type": "number",
+          "minimum": 0
+        },
+        "wind_direction_degrees": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 360
+        },
+        "tide_station_noaa_id": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
