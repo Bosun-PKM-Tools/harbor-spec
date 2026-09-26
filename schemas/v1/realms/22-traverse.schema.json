@@ -1,73 +1,80 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/22-traverse.schema.json",
-  "title": "Bosun Realm 22: Traverse Contract v1",
-  "description": "Machine-readable delta schema contract for Traverse (Realm 22), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/traverse.schema.json",
+  "title": "Traverse Realm Schema (22)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$traverse"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "traverse",
-              "description": "Canonical realm identifier for Traverse."
-            }
-          }
+        "realm": {
+          "const": "traverse"
         },
-        "geojson_feature": {
-          "type": "object",
-          "required": [
-            "type",
-            "geometry"
-          ],
-          "properties": {
-            "type": {
-              "type": "string",
-              "const": "Feature"
-            },
-            "geometry": {
-              "type": "object",
-              "required": [
-                "type",
-                "coordinates"
-              ],
-              "properties": {
-                "type": {
-                  "type": "string"
-                },
-                "coordinates": {
-                  "type": "array"
-                }
-              },
-              "additionalProperties": true
-            },
-            "properties": {
-              "type": "object"
-            }
-          },
-          "additionalProperties": true,
-          "description": "RFC 7946 GeoJSON Feature representation."
-        },
-        "epsg_srid": {
-          "type": "integer",
-          "description": "Spatial Reference System Identifier (e.g. 4326 for WGS84)."
-        },
-        "survey_datum": {
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$traverse": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "feature_type",
+        "crs",
+        "coordinates",
+        "geometry_cas"
+      ],
+      "properties": {
+        "feature_type": {
           "type": "string",
-          "description": "Geodetic survey datum reference (e.g. WGS84, NAD83)."
+          "enum": [
+            "Point",
+            "LineString",
+            "Polygon",
+            "MultiPolygon",
+            "FeatureCollection"
+          ]
+        },
+        "crs": {
+          "type": "string",
+          "enum": [
+            "EPSG:4326",
+            "EPSG:3857",
+            "WGS84"
+          ]
+        },
+        "coordinates": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 3
+        },
+        "elevation_meters": {
+          "type": "number"
+        },
+        "geometry_cas": {
+          "type": "string",
+          "pattern": "^urn:cas:sha256:[a-f0-9]{64}$"
+        },
+        "bounding_box": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 4,
+          "maxItems": 4
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }

@@ -48,7 +48,13 @@ fixture_map = {
     "18-commonplace-book.md": ["realms/18-commonplace.schema.json", "realms/commonplace.schema.json"],
     "19-chantey-episode.md": ["realms/19-chantey.schema.json", "realms/chantey.schema.json"],
     "20-marquee-rush.md": ["realms/20-marquee.schema.json", "realms/marquee.schema.json"],
-    "21-scrimshaw-cam.md": ["realms/21-scrimshaw.schema.json", "realms/scrimshaw.schema.json"]
+    "21-scrimshaw-cam.md": ["realms/21-scrimshaw.schema.json", "realms/scrimshaw.schema.json"],
+    # Wave 5 (Realms 22-26)
+    "22-traverse-survey.md": ["realms/22-traverse.schema.json", "realms/traverse.schema.json"],
+    "23-docent-citation.md": ["realms/23-docent.schema.json", "realms/docent.schema.json"],
+    "24-proctor-contract.md": ["realms/24-proctor.schema.json", "realms/proctor.schema.json"],
+    "25-ropewalk-repo.md": ["realms/25-ropewalk.schema.json", "realms/ropewalk.schema.json"],
+    "26-gavel-minutes.md": ["realms/26-gavel.schema.json", "realms/gavel.schema.json"]
 }
 
 def extract_frontmatter(path: Path) -> dict:
@@ -64,7 +70,7 @@ registry = build_registry()
 passed = 0
 failed = 0
 
-print("=== Running Bosun Spec 20-Fixture Validation Suite ===")
+print("=== Running Bosun Spec 25-Fixture Validation Suite ===")
 
 for file_name, schema_candidates in fixture_map.items():
     fixture_path = None

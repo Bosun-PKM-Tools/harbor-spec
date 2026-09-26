@@ -1,44 +1,80 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://bosunpkm.com/schemas/v1/realms/23-docent.schema.json",
-  "title": "Bosun Realm 23: Docent Contract v1",
-  "description": "Machine-readable delta schema contract for Docent (Realm 23), extending Archetype Catalog Dossier with realm-specific payload attributes.",
+  "$id": "https://schemas.bosunpkm.com/v1/realms/docent.schema.json",
+  "title": "Docent Realm Schema (23)",
   "type": "object",
-  "version": "1.0.0",
-  "allOf": [
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/archetypes/catalog-dossier.schema.json"
-    },
-    {
-      "$ref": "https://bosunpkm.com/schemas/v1/meta/envelope.schema.json"
-    },
-    {
+  "required": [
+    "$pkm",
+    "$docent"
+  ],
+  "properties": {
+    "$pkm": {
       "type": "object",
+      "required": [
+        "realm",
+        "archetype"
+      ],
       "properties": {
-        "$pkm": {
-          "type": "object",
-          "properties": {
-            "realm": {
-              "const": "docent",
-              "description": "Canonical realm identifier for Docent."
-            }
-          }
+        "realm": {
+          "const": "docent"
+        },
+        "archetype": {
+          "const": "catalog_dossier"
+        }
+      }
+    },
+    "$docent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entry_type",
+        "citation_key",
+        "authors",
+        "year",
+        "title"
+      ],
+      "properties": {
+        "entry_type": {
+          "type": "string",
+          "enum": [
+            "article",
+            "book",
+            "inproceedings",
+            "phdthesis",
+            "techreport",
+            "misc"
+          ]
+        },
+        "citation_key": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 1500
         },
         "doi": {
           "type": "string",
-          "pattern": "^10\\.[0-9]{4,9}/[-._;()/:A-Za-z0-9]+$",
-          "description": "Digital Object Identifier for the academic publication."
-        },
-        "bibtex_key": {
-          "type": "string",
-          "description": "Canonical citation key in BibTeX bibliography databases."
+          "pattern": "^10[.][0-9]{4,9}/[-._;()/:A-Za-z0-9]+$"
         },
         "arxiv_id": {
           "type": "string",
-          "description": "arXiv preprint accession identifier."
+          "pattern": "^[0-9]{4}[.][0-9]{4,5}(v[0-9]+)?$"
+        },
+        "publication_venue": {
+          "type": "string"
         }
       }
     }
-  ],
-  "additionalProperties": true
+  }
 }
